@@ -17,7 +17,12 @@ package com.recipeapp.core.platform
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.haroldadmin.vector.VectorState
+import com.haroldadmin.vector.VectorViewModel
 import com.recipeapp.core.exception.Failure
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 
 /**
  * Base ViewModel class with default Failure handling.
@@ -42,3 +47,22 @@ abstract class BaseViewModel : ViewModel() {
 }
 
 object Empty
+
+/**
+ * Base ViewModel class with default Failure handling.
+ * @see ViewModel
+ * @see Failure
+ */
+abstract class BaseMVIViewmodel<T : RecipeState>(initialState : T) : VectorViewModel<T>(initialState) {
+
+    var failure: MutableLiveData<Failure> = MutableLiveData()
+    val viewModelScope = CoroutineScope(Dispatchers.Default + Job())
+
+    protected fun handleFailure(failure: Failure) {
+        this.failure.value = failure
+    }
+
+
+}
+
+open class RecipeState : VectorState

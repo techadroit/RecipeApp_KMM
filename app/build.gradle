@@ -64,7 +64,7 @@ dependencies {
     implementation 'androidx.fragment:fragment-testing:1.1.0'
     implementation 'io.coil-kt:coil:0.8.0'
     implementation "androidx.appcompat:appcompat:$appcompat_version"
-
+    implementation "com.github.haroldadmin:Vector:0.5.5"
 // alternatively - just ViewModel
     implementation "androidx.lifecycle:lifecycle-viewmodel:$lifecycle_version"
     // For Kotlin use lifecycle-viewmodel-ktx

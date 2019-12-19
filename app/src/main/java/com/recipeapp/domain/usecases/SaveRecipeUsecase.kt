@@ -11,6 +11,9 @@ class SaveRecipeUsecase(var localRepository: RecipeLocalRepository) :
     UseCase<Long, SaveRecipeUsecase.Param>() {
     override suspend fun run(params: Param): Either<Failure, Long> {
         val recipe = mapToRecipeEntity(params.recipeModel)
+
+
+
         return localRepository.insertRecipe(recipe)
     }
 

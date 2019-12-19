@@ -25,7 +25,7 @@ class FragmentShowSavedRecipesViewmodel : BaseViewModel() {
 
     fun handleRecipeResponse(it: Either<Failure, List<RecipeModel>>) {
         hideLoading(liveData)
-        it.either(::handleRecipesFailure,::handleOnSuccessForLoadingRecipesFromDatabase)
+        it.either(::handleRecipesFailure, ::handleOnSuccessForLoadingRecipesFromDatabase)
     }
 
     fun handleRecipesFailure(failure: Failure) {
@@ -36,3 +36,5 @@ class FragmentShowSavedRecipesViewmodel : BaseViewModel() {
         liveData.value = ViewState.onSuccess(list)
     }
 }
+
+//data class SaveRecipeState(var isLoading: Boolean, ) : RecipeState()

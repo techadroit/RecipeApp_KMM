@@ -23,12 +23,36 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import com.haroldadmin.vector.VectorFragment
 
 /**
  * Base Fragment class with helper methods for handling views and back button events.
  *
  * @see Fragment
  */
+abstract class BaseMVIFragment : VectorFragment() {
+
+    abstract fun layoutId(): Int
+
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+    var navigator: Navigator? = null
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        activity?.let { navigator = Navigator(it) }
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View =
+        inflater.inflate(layoutId(), container, false)
+
+    open fun onBackPressed() {}
+
+    internal fun firstTimeCreated(savedInstanceState: Bundle?) = savedInstanceState == null
+}
 abstract class BaseFragment : Fragment() {
 
     abstract fun layoutId(): Int

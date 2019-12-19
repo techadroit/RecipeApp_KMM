@@ -29,6 +29,11 @@ class Navigator(var activity: FragmentActivity) {
             .commitAllowingStateLoss()
     }
 
+    fun addFragment(fragment: BaseMVIFragment, resId: ResId) {
+        activity.supportFragmentManager.beginTransaction().add(resId.resId, fragment, fragment.tag)
+            .commitAllowingStateLoss()
+    }
+
     fun playVideoOnYoutube(youtubeId : Long) {
         val intent = Intent(activity, YouTubePlayerActivity::class.java)
         intent.putExtra(YouTubePlayerActivity.EXTRA_VIDEO_ID, youtubeId)

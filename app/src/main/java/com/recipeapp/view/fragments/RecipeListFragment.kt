@@ -3,27 +3,26 @@ package com.recipeapp.view.fragments
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import com.haroldadmin.vector.fragmentViewModel
 import com.recipeapp.R
-import com.recipeapp.core.platform.BaseFragment
-import com.recipeapp.core.platform.ViewState
+import com.recipeapp.core.Resource
+import com.recipeapp.core.platform.BaseMVIFragment
 import com.recipeapp.data.datasource.RecipeDatabase
 import com.recipeapp.data.repositories.RecipeLocalRepository
 import com.recipeapp.view.adapter.RecipeController
 import com.recipeapp.view.pojo.RecipeModel
 import com.recipeapp.view.viewmodel.RecipeListViewmodel
 import kotlinx.android.synthetic.main.fragment_recipe_list_layout.*
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
 
-class RecipeListFragment : BaseFragment() {
+class RecipeListFragment : BaseMVIFragment() {
     override fun layoutId(): Int {
         return R.layout.fragment_recipe_list_layout
     }
 
-    val viewmodel by lazy {
-        ViewModelProviders.of(this).get(RecipeListViewmodel::class.java)
-    }
+    val viewmodel: RecipeListViewmodel by fragmentViewModel()
     val recipeController = RecipeController()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -33,7 +32,6 @@ class RecipeListFragment : BaseFragment() {
             RecipeLocalRepository(RecipeDatabase.getDatabase(context!!).recipeDao())
         viewmodel.loadRecipes()
         observeChanges()
-        onSavedRecipe()
     }
 
     fun initEpoxy() {
@@ -45,33 +43,26 @@ class RecipeListFragment : BaseFragment() {
         }
     }
 
-    fun onSavedRecipe() {
-        viewmodel.saveRecipeLiveData.observe(this, Observer {
-            when (it) {
-                is ViewState.onSuccess -> {
+    fun observeChanges() {
+        viewScope.launch {
+            viewmodel.state.collect { state ->
+                if (state.isLoading) {
+                    showLoading()
+                } else {
+                    hideLoading()
+                }
+
+                state.recipes()?.let {
+                    if (it is Resource.Success) {
+                        val list = it.data
+                        addRecipes(list)
+                    }
+                }
+                if (state.onSavedRecipes is Resource.Success) {
                     Toast.makeText(context, "saved successfully", Toast.LENGTH_SHORT).show()
                 }
-                else -> {
-                }
             }
         }
-        )
-    }
-
-    fun observeChanges() {
-        viewmodel.liveData.observe(this, Observer {
-            when (it) {
-                is ViewState.onSuccess -> {
-                    addRecipes(it.data as List<RecipeModel>)
-                }
-                is ViewState.onLoading -> {
-                    if (it.loading) showLoading() else hideLoading()
-                }
-                else -> {
-                }
-            }
-        }
-        )
     }
 
     fun showLoading() {
