@@ -19,6 +19,6 @@ class SavedRecipe(
     val title: String
 )
 
-fun SavedRecipe.toRecipeModal() : RecipeModel{
-    return RecipeModel(id,title,servings,imageUrl,readyInMinutes)
+fun SavedRecipe.toRecipeModal(): RecipeModel {
+    return RecipeModel(id, title, servings, imageUrl, readyInMinutes)
 }

@@ -15,3 +15,9 @@ abstract class LoadingViewHolder : BaseItemModel<LoadingViewHolder.LoadingEpoxyH
         }
     }
 }
+
+@EpoxyModelClass(layout = R.layout.item_page_load)
+abstract class PaginationLoadingHolder :
+    BaseItemModel<PaginationLoadingHolder.PaginationEpoxyHolder>() {
+    class PaginationEpoxyHolder : BaseHolder()
+}

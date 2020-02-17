@@ -2,23 +2,18 @@ package com.recipeapp.view.fragments
 
 import android.os.Bundle
 import android.view.View
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import com.haroldadmin.vector.fragmentViewModel
 import com.recipeapp.R
-import com.recipeapp.core.platform.BaseFragment
+import com.recipeapp.core.platform.BaseMVIFragment
 import com.recipeapp.core.platform.OnClickEvent
-import com.recipeapp.core.platform.ViewState
-import com.recipeapp.data.network.response.Video
 import com.recipeapp.view.adapter.RecipesVideoController
 import com.recipeapp.view.viewmodel.VideoListViewmodel
 import kotlinx.android.synthetic.main.fragment_recipe_detail.*
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
-class RecipeVideosFragment : BaseFragment() {
-
-    val viewmodel by lazy {
-        ViewModelProviders.of(this).get(VideoListViewmodel::class.java)
-    }
-
+class RecipeVideosFragment : BaseMVIFragment() {
+    val viewmodel: VideoListViewmodel by fragmentViewModel()
     val controller = RecipesVideoController()
 
     override fun layoutId(): Int {
@@ -44,23 +39,20 @@ class RecipeVideosFragment : BaseFragment() {
                 }
             }
         }
+
+        viewScope.launch {
+            rvList.onScrollBottom().collect {
+                if (it) {
+                    viewmodel.loadMoreRecipes()
+                }
+            }
+        }
     }
 
     fun observeVideoRecipes() {
-        viewmodel.videosListLiveData.observe(this@RecipeVideosFragment, Observer {
-            when (it) {
-                is ViewState.onSuccess -> {
-                    val list = it.data as List<Video>
-                    controller.list.addAll(list)
-                    controller.requestModelBuild()
-                }
-                is ViewState.onLoading -> {
-                    controller.isLoading = it.loading
-                    controller.requestModelBuild()
-                }
-                is ViewState.onError -> {
-                }
-            }
-        })
+
+        renderState(viewmodel) { state ->
+            controller.setState(state)
+        }
     }
 }

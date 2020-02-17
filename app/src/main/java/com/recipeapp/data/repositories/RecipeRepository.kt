@@ -11,7 +11,6 @@ import com.recipeapp.data.network.response.VideoListResponses
 
 class RecipeRepository(val recipeApiService: RecipeApi) : BaseRepository {
 
-
     suspend fun getRandomRecipe(
         limitLicense: Boolean,
         tags: String,
@@ -27,10 +26,11 @@ class RecipeRepository(val recipeApiService: RecipeApi) : BaseRepository {
     suspend fun searchRecipeFor(
         query: String,
         limitLicense: Boolean,
-        number: Int
+        number: Int,
+        offset : Int = 0
     ): Either<Failure, RecipeSearchResponse> =
         try {
-            val response = recipeApiService.searchRecipes(limitLicense, query, number)
+            val response = recipeApiService.searchRecipes(limitLicense, query, number,offset = offset)
             Either.Right(response)
         } catch (e: Exception) {
             Either.Left(Failure.ServerError)
@@ -38,10 +38,11 @@ class RecipeRepository(val recipeApiService: RecipeApi) : BaseRepository {
 
     suspend fun searchVideoRecipeFor(
         query: String,
-        number: Int
+        number: Int,
+        Offset : Int = 0
     ): Either<Failure, VideoListResponses> =
         try {
-            val response = recipeApiService.searchVideos(tags = query,number =  number)
+            val response = recipeApiService.searchVideos(tags = query,number =  number,offset = Offset)
             Either.Right(response)
         } catch (e: Exception) {
             Either.Left(Failure.ServerError)

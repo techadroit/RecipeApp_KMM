@@ -17,7 +17,8 @@ import org.robolectric.annotation.Config
  * @see UnitTest
  */
 @RunWith(RobolectricTestRunner::class)
-@Config(constants = BuildConfig::class,
+@Config(
+//    constants = BuildConfig::class,
     application = AndroidTest.ApplicationStub::class,
     sdk = [21])
 abstract class AndroidTest {

@@ -1,5 +1,8 @@
 package com.recipeapp.core.functional
 
+import com.recipeapp.core.functional.Either.Left
+import com.recipeapp.core.functional.Either.Right
+
 /**
  * Represents a value of one of two possible types (a disjoint union).
  * Instances of [Either] are either an instance of [Left] or [Right].
@@ -12,11 +15,24 @@ package com.recipeapp.core.functional
 sealed class Either<out L, out R> {
     /** * Represents the left side of [Either] class which by convention is a "Failure". */
     data class Left<out L>(val a: L) : Either<L, Nothing>()
+
     /** * Represents the right side of [Either] class which by convention is a "Success". */
     data class Right<out R>(val b: R) : Either<Nothing, R>()
 
     val isRight get() = this is Right<R>
     val isLeft get() = this is Left<L>
+
+    fun getLeft(): L {
+        if (this is Left)
+            return this.a
+        throw Exception(" Left is empty")
+    }
+
+    fun getRight(): R {
+        if (this is Right)
+            return this.b
+        throw Exception(" Right is empty")
+    }
 
     fun <L> left(a: L) = Either.Left(a)
     fun <R> right(b: R) = Either.Right(b)
@@ -26,6 +42,14 @@ sealed class Either<out L, out R> {
             is Left -> fnL(a)
             is Right -> fnR(b)
         }
+
+//    fun either(fnL: (L) -> Any, fnR: (R) -> Any): Any =
+//        when (this) {
+//            is Left -> fnL(a)
+//            is Right -> fnR(b)
+//        }
+
+
 }
 
 // Credits to Alex Hart -> https://proandroiddev.com/kotlins-nothing-type-946de7d464fb

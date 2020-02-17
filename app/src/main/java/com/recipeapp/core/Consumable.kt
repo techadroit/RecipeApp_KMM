@@ -2,7 +2,7 @@ package com.recipeapp.core
 
 import java.io.Serializable
 
-data class Consumable <out T> (private val data: T?, private var isConsumed: Boolean = false): Serializable {
+data class Consumable <out T> (val data: T?, private var isConsumed: Boolean = false): Serializable {
 
     @Synchronized
     fun consume(): T? {
@@ -17,6 +17,7 @@ data class Consumable <out T> (private val data: T?, private var isConsumed: Boo
     operator fun invoke(): T? {
         return consume()
     }
+
 }
 
 fun <T: Any?> T.asConsumable(): Consumable<T> {
@@ -26,3 +27,5 @@ fun <T: Any?> T.asConsumable(): Consumable<T> {
 fun <T : Any> Resource<T>.asConsumable(): Consumable<Resource<T>> {
     return Consumable(this)
 }
+
+inline fun <reified E> Consumable<*>.isOfType(type : E) : Boolean = data is E

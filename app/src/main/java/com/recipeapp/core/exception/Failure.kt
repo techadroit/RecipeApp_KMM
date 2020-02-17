@@ -23,8 +23,12 @@ sealed class Failure {
     object NetworkConnection : Failure()
     object ServerError : Failure()
     object Unauthorized : Failure()
-    object NoSavedRecipe : Failure()
+    object UnknonwnError : Failure()
 
     /** * Extend this class for feature specific failures.*/
     abstract class FeatureFailure: Failure()
 }
+
+
+object NoSavedRecipe : Failure.FeatureFailure()
+

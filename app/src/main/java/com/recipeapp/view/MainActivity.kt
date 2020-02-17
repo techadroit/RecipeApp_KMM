@@ -3,20 +3,38 @@ package com.recipeapp.view
 import android.os.Bundle
 import android.view.MenuItem
 import androidx.core.view.forEach
+import androidx.lifecycle.lifecycleScope
 import com.recipeapp.R
 import com.recipeapp.core.platform.BaseActivity
 import com.recipeapp.core.platform.ResId
+import com.recipeapp.data.datasource.RecipeDatabase
+import com.recipeapp.data.repositories.RecipeLocalRepository
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
+
 
 class MainActivity : BaseActivity() {
 
     val fragmentContainerId = ResId(R.id.container)
+    val recipeLocalRepository by lazy {
+        RecipeLocalRepository(RecipeDatabase.getDatabase(this@MainActivity).recipeDao())
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        navigator.showRecipeList(fragmentContainerId)
         initBottomNav()
+        updateSavedRecipesBadge()
+    }
+
+    fun updateSavedRecipesBadge() {
+        lifecycleScope.launch {
+            recipeLocalRepository.getSavedReicpesCount().collect {
+                if (it > 0)
+                    bottomNav.getOrCreateBadge(R.id.action_favorites).number = it.toInt()
+            }
+        }
     }
 
     fun initBottomNav() {

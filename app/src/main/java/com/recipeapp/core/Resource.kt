@@ -17,6 +17,23 @@ sealed class Resource<out T> {
         }
     }
 
+    data class ListData<T>(val data : List<T>,val isCached : Boolean = false) : Resource<T>(){
+
+        var cachedData = mutableListOf<T>()
+
+        init {
+            if(isCached){
+                cachedData?.addAll(data)
+            }
+        }
+
+        operator fun invoke() : List<T>{
+            return data
+        }
+    }
+
+
+
     /**
      * A data class to represent the scenario where a resource may or may not be available due to an error
      */

@@ -2,15 +2,13 @@ package com.recipeapp.core.network
 
 import com.google.gson.Gson
 import com.recipeapp.BuildConfig
-import com.recipeapp.core.network.api_service.ApiService
 import com.recipeapp.core.network.api_service.RecipeApi
 import okhttp3.Cache
 import okhttp3.OkHttpClient
-import retrofit2.Retrofit
-import java.util.concurrent.TimeUnit
 import okhttp3.logging.HttpLoggingInterceptor
-import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
+import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.util.concurrent.TimeUnit
 
 object NetworkHandler {
 
@@ -24,12 +22,8 @@ object NetworkHandler {
         if (cache != null)
             okHttpClient.cache(cache)
         val gsonConverter = GsonConverterFactory.create(Gson())
-        val rxJava2CallAdapterFactory = RxJava2CallAdapterFactory.create()
         val client = okHttpClient.build()
-        /**
-         * retrofit instance for rexel api
-         */
-        retrofit = createRetrofitInstance(BASE_URL, gsonConverter, rxJava2CallAdapterFactory, client)
+        retrofit = createRetrofitInstance(BASE_URL, gsonConverter, client)
     }
 
     private fun createOkHttpClient(): OkHttpClient.Builder {
@@ -46,11 +40,14 @@ object NetworkHandler {
     /**
      * create instance of retrofit
      */
-    private fun createRetrofitInstance(url: String, gsonConverter: GsonConverterFactory, rxJava2CallAdapterFactory: RxJava2CallAdapterFactory, client: OkHttpClient): Retrofit {
+    private fun createRetrofitInstance(
+        url: String,
+        gsonConverter: GsonConverterFactory,
+        client: OkHttpClient
+    ): Retrofit {
         return Retrofit.Builder()
             .baseUrl(url)
             .addConverterFactory(gsonConverter)
-            .addCallAdapterFactory(rxJava2CallAdapterFactory)
             .client(client).build()
     }
 
@@ -58,7 +55,7 @@ object NetworkHandler {
         return retrofit.create(RecipeApi::class.java)
     }
 
-    fun getRetrofitInstance(): Retrofit{
+    fun getRetrofitInstance(): Retrofit {
         return retrofit
     }
 }

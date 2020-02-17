@@ -1,4 +1,4 @@
 package com.recipeapp.util
 
-const val QUERY = "chicken"
+const val QUERY = "fish"
 const val NUMBER = 10
