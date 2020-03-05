@@ -15,20 +15,27 @@
  */
 package com.recipeapp.core.exception
 
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
+
 /**
  * Base Class for handling errors/failures/exceptions.
  * Every feature specific failure should extend [FeatureFailure] class.
  */
-sealed class Failure {
+sealed class Failure : Parcelable{
+    @Parcelize
     object NetworkConnection : Failure()
+    @Parcelize
     object ServerError : Failure()
+    @Parcelize
     object Unauthorized : Failure()
+    @Parcelize
     object UnknonwnError : Failure()
 
     /** * Extend this class for feature specific failures.*/
     abstract class FeatureFailure: Failure()
 }
 
-
+@Parcelize
 object NoSavedRecipe : Failure.FeatureFailure()
 

@@ -1,5 +1,6 @@
 package com.recipeapp.view.viewmodel
 
+import androidx.lifecycle.SavedStateHandle
 import com.recipeapp.core.Consumable
 import com.recipeapp.core.Resource
 import com.recipeapp.core.exception.Failure
@@ -14,8 +15,8 @@ import com.recipeapp.domain.usecases.SearchVideoRecipeUsecase
 import com.recipeapp.util.QUERY
 import kotlinx.coroutines.launch
 
-class VideoListViewmodel(var initalState: RecipeVideoState) :
-    BaseMVIViewmodel<RecipeVideoState>(initalState) {
+class VideoListViewmodel(var initalState: RecipeVideoState,savedStateHandle: SavedStateHandle) :
+    BaseMVIViewmodel<RecipeVideoState>(initalState,savedStateHandle) {
     var page = 0
 
     fun getVideoRecipe() {
@@ -37,7 +38,7 @@ class VideoListViewmodel(var initalState: RecipeVideoState) :
             return
         page++
         viewModelScope.launch {
-            setState {
+            setStateAndPersist {
                 copy(event = RecipeVideoEvent.OnLoad(isPaginate = true, isLoading = false))
             }
             val repos =
@@ -50,7 +51,7 @@ class VideoListViewmodel(var initalState: RecipeVideoState) :
     }
 
     private fun handleVideoResponse(responses: VideoListResponses) {
-        setState {
+        setStateAndPersist {
             copy(event = RecipeVideoEvent.OnRecipeInitialLoad(responses.videos))
         }
     }

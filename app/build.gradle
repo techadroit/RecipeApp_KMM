@@ -15,6 +15,9 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
     }
+    androidExtensions{
+        experimental = true
+    }
     testOptions {
         unitTests {
             includeAndroidResources = true

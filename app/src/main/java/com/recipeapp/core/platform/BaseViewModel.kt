@@ -15,11 +15,14 @@
  */
 package com.recipeapp.core.platform
 
+import android.os.Parcelable
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import com.haroldadmin.vector.SavedStateVectorViewModel
 import com.haroldadmin.vector.VectorState
-import com.haroldadmin.vector.VectorViewModel
 import com.recipeapp.core.exception.Failure
+import kotlinx.android.parcel.Parcelize
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -46,14 +49,19 @@ abstract class BaseViewModel : ViewModel() {
     }
 }
 
-object Empty
+@Parcelize
+object Empty : Parcelable
 
 /**
  * Base ViewModel class with default Failure handling.
  * @see ViewModel
  * @see Failure
  */
-abstract class BaseMVIViewmodel<T : RecipeState>(initialState : T) : VectorViewModel<T>(initialState) {
+abstract class BaseMVIViewmodel<T : RecipeState>(
+    initialState: T,
+    savedStateHandle: SavedStateHandle
+) : SavedStateVectorViewModel<T>(initialState = initialState,savedStateHandle = savedStateHandle) {
+
 
     var failure: MutableLiveData<Failure> = MutableLiveData()
     val viewModelScope = CoroutineScope(Dispatchers.Default + Job())
@@ -65,4 +73,5 @@ abstract class BaseMVIViewmodel<T : RecipeState>(initialState : T) : VectorViewM
 
 }
 
-open class RecipeState : VectorState
+@Parcelize
+open class RecipeState : VectorState,Parcelable
