@@ -1,7 +1,8 @@
 package com.recipeapp.core.usecase
 
 import com.recipeapp.core.exception.Failure
-import com.recipeapp.core.functional.Either
+import com.shared.recipe.resource.Either
+
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async

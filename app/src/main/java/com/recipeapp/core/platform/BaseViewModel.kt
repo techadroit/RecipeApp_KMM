@@ -22,6 +22,7 @@ import androidx.lifecycle.ViewModel
 import com.haroldadmin.vector.SavedStateVectorViewModel
 import com.haroldadmin.vector.VectorState
 import com.recipeapp.core.exception.Failure
+import com.shared.recipe.repository.ApiFailure
 import kotlinx.android.parcel.Parcelize
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -68,6 +69,9 @@ abstract class BaseMVIViewmodel<T : RecipeState>(
 
     protected fun handleFailure(failure: Failure) {
         this.failure.value = failure
+    }
+    protected fun handleFailure(failure: ApiFailure) {
+//        this.failure.value = failure
     }
 
 

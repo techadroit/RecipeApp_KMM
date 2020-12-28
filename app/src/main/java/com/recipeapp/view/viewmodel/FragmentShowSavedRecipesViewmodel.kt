@@ -2,38 +2,43 @@ package com.recipeapp.view.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.recipeapp.core.exception.Failure
-import com.recipeapp.core.functional.Either
 import com.recipeapp.core.platform.BaseViewModel
 import com.recipeapp.core.platform.ViewState
-import com.recipeapp.core.usecase.UseCase
-import com.recipeapp.domain.usecases.LoadSavedRecipeUsecase
 import com.recipeapp.view.pojo.RecipeModel
+import com.shared.recipe.RecipeEntity
+import com.shared.recipe.repository.ApiFailure
+import com.shared.recipe.repository.LocalRepository
+import com.shared.recipe.resource.Either
+import com.shared.recipe.usecases.BaseUsecase
+import com.shared.recipe.usecases.LoadSavedRecipeUsecase
 import kotlinx.coroutines.launch
 
 class FragmentShowSavedRecipesViewmodel : BaseViewModel() {
 
     val liveData = MutableLiveData<ViewState>()
-    lateinit var usecase: LoadSavedRecipeUsecase
+    var usecase = LoadSavedRecipeUsecase(LocalRepository())
 
     fun loadSavedRecipes() {
         viewModelScope.launch {
             showLoading(liveData)
-            usecase(UseCase.None(), ::handleRecipeResponse)
+            usecase(BaseUsecase.None(), ::handleRecipeResponse)
         }
     }
 
-    fun handleRecipeResponse(it: Either<Failure, List<RecipeModel>>) {
+    fun handleRecipeResponse(it: Either<ApiFailure, List<RecipeEntity>>) {
         hideLoading(liveData)
         it.either(::handleRecipesFailure, ::handleOnSuccessForLoadingRecipesFromDatabase)
     }
 
-    fun handleRecipesFailure(failure: Failure) {
+    fun handleRecipesFailure(failure: ApiFailure) {
         liveData.value = ViewState.onError(failure)
     }
 
-    fun handleOnSuccessForLoadingRecipesFromDatabase(list: List<RecipeModel>) {
-        liveData.value = ViewState.onSuccess(list)
+    fun handleOnSuccessForLoadingRecipesFromDatabase(list: List<RecipeEntity>) {
+        val newList = list.map {
+            RecipeModel(it.id,it.title,it.servings,it.imageUrl,it.cookingTime)
+        }
+        liveData.value = ViewState.onSuccess(newList)
     }
 }
 

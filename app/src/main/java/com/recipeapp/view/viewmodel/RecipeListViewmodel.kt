@@ -4,37 +4,38 @@ import android.os.Parcelable
 import androidx.lifecycle.SavedStateHandle
 import com.recipeapp.core.Consumable
 import com.recipeapp.core.Resource
-import com.recipeapp.core.exception.Failure
-import com.recipeapp.core.functional.Either
-import com.recipeapp.core.network.NetworkHandler
-import com.recipeapp.core.network.api_service.RecipeApi
 import com.recipeapp.core.platform.BaseMVIViewmodel
 import com.recipeapp.core.platform.Empty
 import com.recipeapp.core.platform.RecipeState
-import com.recipeapp.data.network.response.RecipeSearchResponse
-import com.recipeapp.data.repositories.RecipeLocalRepository
-import com.recipeapp.data.repositories.RecipeRepository
-import com.recipeapp.domain.usecases.SaveRecipeUsecase
-import com.recipeapp.domain.usecases.SearchRecipeUsecase
 import com.recipeapp.util.QUERY
 import com.recipeapp.view.pojo.RecipeModel
+import com.shared.recipe.RecipeEntity
+import com.shared.recipe.repository.ApiFailure
+import com.shared.recipe.repository.LocalRepository
+import com.shared.recipe.repository.RecipeRemoteRepository
+import com.shared.recipe.resource.Either
+import com.shared.recipe.response.RecipeResponse
+import com.shared.recipe.usecases.SaveRecipeUsecase
+import com.shared.recipe.usecases.SearchRecipeUsecase
 import kotlinx.android.parcel.Parcelize
-import kotlinx.android.parcel.RawValue
 import kotlinx.coroutines.launch
 
-class RecipeListViewmodel(initialState: RecipeListState,savedStateHandle: SavedStateHandle) :
-    BaseMVIViewmodel<RecipeListState>(initialState,savedStateHandle) {
+class RecipeListViewmodel(initialState: RecipeListState, savedStateHandle: SavedStateHandle) :
+    BaseMVIViewmodel<RecipeListState>(initialState, savedStateHandle) {
 
-    lateinit var localRepository: RecipeLocalRepository
+    var localRepository = LocalRepository()
     var page = 1
-    private val repos =
-        RecipeRepository(NetworkHandler.getRetrofitInstance().create(RecipeApi::class.java))
+
+    private val repos = RecipeRemoteRepository()
     val searchUsecase by lazy { SearchRecipeUsecase(repos) }
     val usecase by lazy { SaveRecipeUsecase(localRepository) }
 
     fun saveRecipe(recipeModel: RecipeModel) {
         viewModelScope.launch {
-            usecase(SaveRecipeUsecase.Param(recipeModel), { onRecipeSaved() })
+            usecase(SaveRecipeUsecase.Params(RecipeEntity(id = recipeModel.id,
+            imageUrl = recipeModel.imageUrl,cookingTime = recipeModel.cookingTime,servings = recipeModel.servings,
+            title = recipeModel.title))
+            ) { onRecipeSaved() }
         }
     }
 
@@ -48,10 +49,8 @@ class RecipeListViewmodel(initialState: RecipeListState,savedStateHandle: SavedS
     }
 
     fun loadRecipes() = viewModelScope.launch {
-
         if (currentState.event is RecipeEvent.OnLoad)
             return@launch
-
         setStateAndPersist { copy(event = RecipeEvent.OnLoad(isLoading = true)) }
         searchUsecase(SearchRecipeUsecase.Param(query = QUERY)) {
             when (it) {
@@ -75,19 +74,19 @@ class RecipeListViewmodel(initialState: RecipeListState,savedStateHandle: SavedS
     }
 
 
-    private fun handleFailure(failure: Failure, isPaginate: Boolean = false) {
+    private fun handleFailure(failure: ApiFailure, isPaginate: Boolean = false) {
         setState {
             copy(event = RecipeEvent.OnError(isPaginate = false, failure = failure))
         }
     }
 
-    private fun handleRecipeSearch(response: RecipeSearchResponse) {
+    private fun handleRecipeSearch(response: RecipeResponse) {
         val recipeList = response.results.map {
             RecipeModel(
                 it.id,
                 it.title,
                 it.servings,
-                response.baseUri + it.image,
+                response.baseURI + it.image,
                 it.readyInMinutes
             )
         }
@@ -99,13 +98,13 @@ class RecipeListViewmodel(initialState: RecipeListState,savedStateHandle: SavedS
         }
     }
 
-    private fun handleRecipePagination(response: RecipeSearchResponse) {
+    private fun handleRecipePagination(response: RecipeResponse) {
         val recipeList = response.results.map {
             RecipeModel(
                 it.id,
                 it.title,
                 it.servings,
-                response.baseUri + it.image,
+                response.baseURI + it.image,
                 it.readyInMinutes
             )
         }
@@ -120,15 +119,19 @@ class RecipeListViewmodel(initialState: RecipeListState,savedStateHandle: SavedS
 }
 
 
-sealed class RecipeEvent : Parcelable{
+sealed class RecipeEvent : Parcelable {
     @Parcelize
     object Uninitialized : RecipeEvent()
+
     @Parcelize
     data class OnLoad(var isPaginate: Boolean = false, var isLoading: Boolean) : RecipeEvent()
+
     @Parcelize
     data class OnRecipeInitialLoad(var data: Resource<*>) : RecipeEvent()
+
     @Parcelize
-    data class OnError(var isPaginate: Boolean = false, var failure: Failure) : RecipeEvent()
+    data class OnError(var isPaginate: Boolean = false, var failure: ApiFailure) : RecipeEvent()
+
     @Parcelize
     data class OnRecipePaginate(var data: Resource<*>) : RecipeEvent()
 }
@@ -145,5 +148,5 @@ data class RecipeListState(
     var event: RecipeEvent = RecipeEvent.Uninitialized,
     val onSavedRecipes: Resource<Empty>? = Resource.Uninitialized,
     var recipes: RecipeData = RecipeData(emptyList()),
-    var sideEffect: Consumable<SideEffect> ?= null
+    var sideEffect: Consumable<SideEffect>? = null
 ) : RecipeState()

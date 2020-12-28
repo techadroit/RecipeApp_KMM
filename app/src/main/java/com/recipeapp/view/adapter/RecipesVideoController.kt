@@ -4,20 +4,19 @@ import android.content.Context
 import com.recipeapp.core.platform.BaseController
 import com.recipeapp.core.platform.OnClick
 import com.recipeapp.core.platform.OnClickEvent
-import com.recipeapp.data.network.response.Video
 import com.recipeapp.view.viewholders.ErrorViewHolder_
 import com.recipeapp.view.viewholders.LoadingViewHolder_
 import com.recipeapp.view.viewholders.PaginationLoadingHolder_
 import com.recipeapp.view.viewholders.RecipeVideoHolders_
-import com.recipeapp.view.viewmodel.RecipeEvent
-import com.recipeapp.view.viewmodel.RecipeListState
 import com.recipeapp.view.viewmodel.RecipeVideoEvent
 import com.recipeapp.view.viewmodel.RecipeVideoState
+import com.shared.recipe.response.Video
 
 class RecipesVideoController : BaseController() {
 
     val list = mutableListOf<Video>()
     var isLoading = true
+
     //Todo change it to a appropriate method
     var click: ((event: OnClickEvent?) -> Unit)? = null
     var isPaginate = false

@@ -32,8 +32,6 @@ class RecipeListFragment : BaseMVIFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initEpoxy()
-        viewmodel.localRepository =
-            RecipeLocalRepository(RecipeDatabase.getDatabase(context!!).recipeDao())
         viewmodel.loadRecipes()
         observeChanges()
     }

@@ -2,13 +2,14 @@ package com.recipeapp.core
 
 import com.recipeapp.AndroidTest
 import com.recipeapp.core.exception.Failure
-import com.recipeapp.core.functional.Either
+
 import com.recipeapp.core.usecase.UseCase
+import com.shared.recipe.resource.Either
 import kotlinx.coroutines.runBlocking
 import org.amshove.kluent.shouldEqual
 import org.junit.Test
 
-class UsecaseTest  : AndroidTest(){
+class UsecaseTest : AndroidTest() {
 
     private val TYPE_TEST = "Test"
     private val TYPE_PARAM = "ParamTest"
@@ -30,7 +31,8 @@ class UsecaseTest  : AndroidTest(){
         result shouldEqual Either.Right(MyType(TYPE_TEST))
     }
 
-    @Test fun `should return correct data when executing use case`() {
+    @Test
+    fun `should return correct data when executing use case`() {
         var result: Either<Failure, MyType>? = null
 
         val params = MyParams("TestParam")

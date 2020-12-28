@@ -10,7 +10,7 @@ data class RecipeDetailResponse(
     val dairyFree: Boolean,
     val diets: List<String>,
     val dishTypes: List<String>,
-    val extendedIngredients: List<ExtendedIngredient>,
+//    val extendedIngredients: List<ExtendedIngredient>,
     val gaps: String,
     val glutenFree: Boolean,
     val healthScore: Double,
@@ -38,7 +38,7 @@ data class RecipeDetailResponse(
     val veryPopular: Boolean,
     val weightWatcherSmartPoints: Int,
     val whole30: Boolean,
-    val winePairing: WinePairing
+//    val winePairing: WinePairing
 )
 
 

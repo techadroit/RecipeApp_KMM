@@ -69,11 +69,6 @@ class MainActivity : BaseActivity() {
                     navigator.showRecipeVideo(fragmentContainerId)
                     return@setOnNavigationItemSelectedListener true
                 }
-                R.id.action_settings -> {
-                    deselectAllTheBottomTabs()
-                    enableMenu(it)
-                    return@setOnNavigationItemSelectedListener true
-                }
                 else -> return@setOnNavigationItemSelectedListener false
             }
         }

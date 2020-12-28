@@ -4,7 +4,7 @@ import com.nhaarman.mockitokotlin2.given
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.verifyNoMoreInteractions
 import com.recipeapp.UnitTest
-import com.recipeapp.core.functional.Either
+
 import com.recipeapp.core.network.NetworkHandler
 import com.recipeapp.core.network.api_service.API_KEY
 import com.recipeapp.core.network.api_service.RecipeApi

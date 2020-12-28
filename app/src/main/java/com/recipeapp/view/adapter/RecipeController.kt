@@ -20,7 +20,6 @@ class RecipeController : BaseController() {
     var isLoading = true
     var isPaginate = false
     var isError = false
-    var isPaginateError = false
     //Todo change it to a appropriate method
     var click: ((recipeModel: RecipeModel?) -> Unit)? = null
     var context: Context? = null

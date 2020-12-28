@@ -9,7 +9,6 @@ import com.recipeapp.core.platform.BaseFragment
 import com.recipeapp.core.platform.ViewState
 import com.recipeapp.data.datasource.RecipeDatabase
 import com.recipeapp.data.repositories.RecipeLocalRepository
-import com.recipeapp.domain.usecases.LoadSavedRecipeUsecase
 import com.recipeapp.view.adapter.RecipeController
 import com.recipeapp.view.pojo.RecipeModel
 import com.recipeapp.view.viewmodel.FragmentShowSavedRecipesViewmodel
@@ -33,9 +32,6 @@ class ShowSavedRecipesFragment : BaseFragment() {
     }
 
     fun initViewModel() {
-        val localRepository =
-            RecipeLocalRepository(RecipeDatabase.getDatabase(context!!).recipeDao())
-        viewmodel.usecase = LoadSavedRecipeUsecase((localRepository))
         viewmodel.loadSavedRecipes()
     }
 

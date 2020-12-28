@@ -1,10 +1,11 @@
 package com.recipeapp.domain.usecases
 
 import com.recipeapp.core.exception.Failure
-import com.recipeapp.core.functional.Either
+
 import com.recipeapp.core.usecase.UseCase
 import com.recipeapp.data.network.response.RecipeDetailResponse
 import com.recipeapp.data.repositories.RecipeRepository
+import com.shared.recipe.resource.Either
 
 class GetRecipeDetailUsecase(var recipeRepository: RecipeRepository) :
     UseCase<RecipeDetailResponse, GetRecipeDetailUsecase.Param>() {

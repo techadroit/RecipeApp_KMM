@@ -16,9 +16,9 @@
         android:id="@+id/action_videos"
         android:title="Videos"
         app:showAsAction="always" />
-    <item
-        android:enabled="true"
-        android:id="@+id/action_settings"
-        android:title="Settings"
-        app:showAsAction="always" />
+<!--    <item-->
+<!--        android:enabled="true"-->
+<!--        android:id="@+id/action_settings"-->
+<!--        android:title="Settings"-->
+<!--        app:showAsAction="always" />-->
 </menu>

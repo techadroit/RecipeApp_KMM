@@ -1,7 +1,7 @@
 package com.recipeapp
 
 import com.nhaarman.mockitokotlin2.given
-import com.recipeapp.core.functional.Either
+
 import com.recipeapp.core.platform.ViewState
 import com.recipeapp.data.network.response.RecipeDetailResponse
 import com.recipeapp.domain.usecases.GetRecipeDetailUsecase

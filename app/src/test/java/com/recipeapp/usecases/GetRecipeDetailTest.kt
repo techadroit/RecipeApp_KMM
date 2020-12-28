@@ -4,7 +4,7 @@ import com.nhaarman.mockitokotlin2.given
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.verifyNoMoreInteractions
 import com.recipeapp.UnitTest
-import com.recipeapp.core.functional.Either
+
 import com.recipeapp.data.network.response.RecipeDetailResponse
 import com.recipeapp.data.repositories.RecipeRepository
 import com.recipeapp.domain.usecases.GetRecipeDetailUsecase

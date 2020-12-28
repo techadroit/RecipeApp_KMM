@@ -1,9 +1,8 @@
 package com.recipeapp.core.network.api_service
 
-import com.recipeapp.data.network.response.RandomRecipesResponse
 import com.recipeapp.data.network.response.RecipeDetailResponse
-import com.recipeapp.data.network.response.RecipeSearchResponse
-import com.recipeapp.data.network.response.VideoListResponses
+import com.shared.recipe.response.RecipeResponse
+import com.shared.recipe.response.VideoRecipeResponse
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
@@ -16,21 +15,21 @@ interface RecipeApi {
     suspend fun getRandomRecipes(
         @Query("limitLicense") limitLicense: Boolean, @Query("tags") tags: String,
         @Query("number") number: Int, @Query("apiKey") apiKey: String = API_KEY
-    ): RandomRecipesResponse
+    ): RecipeResponse
 
     @GET("recipes/search")
     suspend fun searchRecipes(
         @Query("limitLicense") limitLicense: Boolean, @Query("query") tags: String,
         @Query("number") number: Int, @Query("apiKey") apiKey: String = API_KEY,
         @Query("offset") offset: Int = 0
-    ): RecipeSearchResponse
+    ): RecipeResponse
 
     @GET("food/videos/search")
     suspend fun searchVideos(
         @Query("query") tags: String,
         @Query("number") number: Int, @Query("apiKey") apiKey: String = API_KEY,
         @Query("offset") offset: Int = 0
-    ): VideoListResponses
+    ): VideoRecipeResponse
 
     @GET("recipes/{id}/information")
     suspend fun recipeDetail(
