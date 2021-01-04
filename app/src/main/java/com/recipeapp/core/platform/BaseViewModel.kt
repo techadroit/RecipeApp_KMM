@@ -23,7 +23,7 @@ import com.haroldadmin.vector.SavedStateVectorViewModel
 import com.haroldadmin.vector.VectorState
 import com.recipeapp.core.exception.Failure
 import com.shared.recipe.repository.ApiFailure
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job

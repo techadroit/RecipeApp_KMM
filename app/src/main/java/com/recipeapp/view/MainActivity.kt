@@ -7,40 +7,39 @@ import androidx.lifecycle.lifecycleScope
 import com.recipeapp.R
 import com.recipeapp.core.platform.BaseActivity
 import com.recipeapp.core.platform.ResId
-import com.recipeapp.data.datasource.RecipeDatabase
-import com.recipeapp.data.repositories.RecipeLocalRepository
-import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.coroutines.flow.collect
+import com.recipeapp.databinding.ActivityMainBinding
 import kotlinx.coroutines.launch
 
 
 class MainActivity : BaseActivity() {
 
-    val fragmentContainerId = ResId(R.id.container)
-    val recipeLocalRepository by lazy {
-        RecipeLocalRepository(RecipeDatabase.getDatabase(this@MainActivity).recipeDao())
+    val fragmentContainerId by lazy {
+        ResId(binding.container.id)
     }
+
+    lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         initBottomNav()
         updateSavedRecipesBadge()
     }
 
     fun updateSavedRecipesBadge() {
         lifecycleScope.launch {
-            recipeLocalRepository.getSavedReicpesCount().collect {
-                if (it > 0)
-                    bottomNav.getOrCreateBadge(R.id.action_favorites).number = it.toInt()
-            }
+//            recipeLocalRepository.getSavedReicpesCount().collect {
+//                if (it > 0)
+//                    bottomNav.getOrCreateBadge(R.id.action_favorites).number = it.toInt()
+//            }
         }
     }
 
     fun initBottomNav() {
 
         fun deselectAllTheBottomTabs() {
-            bottomNav.menu.forEach {
+            binding.bottomNav.menu.forEach {
                 it.setCheckable(false)
             }
         }
@@ -49,7 +48,7 @@ class MainActivity : BaseActivity() {
             it.setCheckable(true)
         }
 
-        bottomNav.setOnNavigationItemSelectedListener {
+        binding.bottomNav.setOnNavigationItemSelectedListener {
             when (it.itemId) {
                 R.id.action_recipes -> {
                     deselectAllTheBottomTabs()
@@ -74,7 +73,7 @@ class MainActivity : BaseActivity() {
         }
 
         deselectAllTheBottomTabs()
-        bottomNav.selectedItemId = R.id.action_recipes
+        binding.bottomNav.selectedItemId = R.id.action_recipes
     }
 
 }

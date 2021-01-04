@@ -18,9 +18,6 @@ package com.recipeapp.core.platform
 //import com.recipeapp.core.extension.viewContainer
 import android.content.Context
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.haroldadmin.vector.VectorFragment
@@ -32,7 +29,7 @@ import com.haroldadmin.vector.VectorFragment
  */
 abstract class BaseMVIFragment : VectorFragment() {
 
-    abstract fun layoutId(): Int
+//    abstract fun layoutId(): Int
 
     lateinit var viewModelFactory: ViewModelProvider.Factory
     var navigator: Navigator? = null
@@ -42,20 +39,19 @@ abstract class BaseMVIFragment : VectorFragment() {
         activity?.let { navigator = Navigator(it) }
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View =
-        inflater.inflate(layoutId(), container, false)
+//    override fun onCreateView(
+//        inflater: LayoutInflater,
+//        container: ViewGroup?,
+//        savedInstanceState: Bundle?
+//    ): View =
+//        inflater.inflate(layoutId(), container, false)
 
     open fun onBackPressed() {}
 
     internal fun firstTimeCreated(savedInstanceState: Bundle?) = savedInstanceState == null
 }
-abstract class BaseFragment : Fragment() {
 
-    abstract fun layoutId(): Int
+abstract class BaseFragment : Fragment() {
 
     lateinit var viewModelFactory: ViewModelProvider.Factory
     var navigator: Navigator? = null
@@ -64,13 +60,6 @@ abstract class BaseFragment : Fragment() {
         super.onAttach(context)
         activity?.let { navigator = Navigator(it) }
     }
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View =
-        inflater.inflate(layoutId(), container, false)
 
     open fun onBackPressed() {}
 

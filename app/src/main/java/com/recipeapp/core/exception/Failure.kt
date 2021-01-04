@@ -16,7 +16,7 @@
 package com.recipeapp.core.exception
 
 import android.os.Parcelable
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 
 /**
  * Base Class for handling errors/failures/exceptions.

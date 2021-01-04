@@ -2,7 +2,7 @@ package com.recipeapp.view.viewholders
 
 import android.widget.ImageView
 import android.widget.TextView
-import coil.api.load
+import coil.load
 import com.airbnb.epoxy.EpoxyAttribute
 import com.airbnb.epoxy.EpoxyModelClass
 import com.recipeapp.R
@@ -11,10 +11,11 @@ import com.recipeapp.core.platform.BaseItemModel
 import com.recipeapp.core.platform.OnClickEvent
 
 @EpoxyModelClass(layout = R.layout.item_video)
-abstract class RecipeVideoHolders : BaseItemModel<VideoHolder>(){
+abstract class RecipeVideoHolders : BaseItemModel<VideoHolder>() {
 
     @EpoxyAttribute
     lateinit var title: String
+
     @EpoxyAttribute
     lateinit var imageUrl: String
 

@@ -1,33 +1,39 @@
 package com.recipeapp.view.fragments
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import com.haroldadmin.vector.fragmentViewModel
-import com.recipeapp.R
 import com.recipeapp.core.platform.BaseMVIFragment
-import com.recipeapp.data.datasource.RecipeDatabase
-import com.recipeapp.data.repositories.RecipeLocalRepository
+import com.recipeapp.databinding.FragmentRecipeListLayoutBinding
 import com.recipeapp.view.adapter.RecipeController
 import com.recipeapp.view.viewmodel.RecipeEvent
 import com.recipeapp.view.viewmodel.RecipeListViewmodel
 import com.recipeapp.view.viewmodel.SideEffect
-import kotlinx.android.synthetic.main.fragment_recipe_list_layout.*
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
-
 class RecipeListFragment : BaseMVIFragment() {
-    override fun layoutId(): Int {
-        return R.layout.fragment_recipe_list_layout
-    }
 
     val viewmodel: RecipeListViewmodel by fragmentViewModel()
     val recipeController = RecipeController()
+    lateinit var binding: FragmentRecipeListLayoutBinding
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        binding = FragmentRecipeListLayoutBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -38,7 +44,7 @@ class RecipeListFragment : BaseMVIFragment() {
 
     private fun initEpoxy() {
         recipeController.context = context
-        rvList.setController(recipeController)
+        binding.rvList.setController(recipeController)
         recipeController.click = {
             it?.let {
                 viewmodel.saveRecipe(it)
@@ -47,8 +53,8 @@ class RecipeListFragment : BaseMVIFragment() {
     }
 
     private fun addEndOfListObserver() {
-        viewScope.launch {
-            rvList.onScrollBottom().collect {
+        viewLifecycleOwner.lifecycleScope.launch {
+            binding.rvList.onScrollBottom().collect {
                 if (it) {
                     viewmodel.paginate()
                 }
@@ -57,7 +63,7 @@ class RecipeListFragment : BaseMVIFragment() {
     }
 
     fun removeEndOfListObserver() {
-        rvList.addOnScrollListener(noScrollListener)
+        binding.rvList.addOnScrollListener(noScrollListener)
     }
 
     private fun observeChanges() {

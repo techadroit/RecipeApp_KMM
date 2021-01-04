@@ -23,8 +23,6 @@ class VideoListViewmodel(var initalState: RecipeVideoState, savedStateHandle: Sa
             setState {
                 copy(event = RecipeVideoEvent.OnLoad(isLoading = true))
             }
-//            val repos =
-//                RecipeRepository(NetworkHandler.getRetrofitInstance().create(RecipeApi::class.java))
             val repos = RecipeRemoteRepository()
             val usecase = SearchVideoRecipeUsecase(repos)
             usecase(SearchVideoRecipeUsecase.Param(query = QUERY, offset = page)) {
@@ -42,8 +40,6 @@ class VideoListViewmodel(var initalState: RecipeVideoState, savedStateHandle: Sa
                 copy(event = RecipeVideoEvent.OnLoad(isPaginate = true, isLoading = false))
             }
             val repos = RecipeRemoteRepository()
-//            val repos =
-//                RecipeRepository(NetworkHandler.getRetrofitInstance().create(RecipeApi::class.java))
             val usecase = SearchVideoRecipeUsecase(repos)
             usecase(SearchVideoRecipeUsecase.Param(query = QUERY, offset = page)) {
                 it.either(::handleResponseFailure, ::handleVideoResponse)

@@ -2,7 +2,7 @@ package com.recipeapp.view.viewholders
 
 import android.widget.ImageView
 import android.widget.TextView
-import coil.api.load
+import coil.load
 import com.airbnb.epoxy.EpoxyAttribute
 import com.airbnb.epoxy.EpoxyModelClass
 import com.google.android.material.button.MaterialButton

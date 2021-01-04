@@ -1,6 +1,5 @@
 package com.recipeapp.view.viewmodel
 
-import android.os.Parcelable
 import androidx.lifecycle.SavedStateHandle
 import com.recipeapp.core.Consumable
 import com.recipeapp.core.Resource
@@ -17,7 +16,6 @@ import com.shared.recipe.resource.Either
 import com.shared.recipe.response.RecipeResponse
 import com.shared.recipe.usecases.SaveRecipeUsecase
 import com.shared.recipe.usecases.SearchRecipeUsecase
-import kotlinx.android.parcel.Parcelize
 import kotlinx.coroutines.launch
 
 class RecipeListViewmodel(initialState: RecipeListState, savedStateHandle: SavedStateHandle) :
@@ -32,9 +30,16 @@ class RecipeListViewmodel(initialState: RecipeListState, savedStateHandle: Saved
 
     fun saveRecipe(recipeModel: RecipeModel) {
         viewModelScope.launch {
-            usecase(SaveRecipeUsecase.Params(RecipeEntity(id = recipeModel.id,
-            imageUrl = recipeModel.imageUrl,cookingTime = recipeModel.cookingTime,servings = recipeModel.servings,
-            title = recipeModel.title))
+            usecase(
+                SaveRecipeUsecase.Params(
+                    RecipeEntity(
+                        id = recipeModel.id,
+                        imageUrl = recipeModel.imageUrl,
+                        cookingTime = recipeModel.cookingTime,
+                        servings = recipeModel.servings,
+                        title = recipeModel.title
+                    )
+                )
             ) { onRecipeSaved() }
         }
     }
@@ -118,21 +123,15 @@ class RecipeListViewmodel(initialState: RecipeListState, savedStateHandle: Saved
 
 }
 
-
-sealed class RecipeEvent : Parcelable {
-    @Parcelize
+sealed class RecipeEvent {
     object Uninitialized : RecipeEvent()
 
-    @Parcelize
     data class OnLoad(var isPaginate: Boolean = false, var isLoading: Boolean) : RecipeEvent()
 
-    @Parcelize
     data class OnRecipeInitialLoad(var data: Resource<*>) : RecipeEvent()
 
-    @Parcelize
     data class OnError(var isPaginate: Boolean = false, var failure: ApiFailure) : RecipeEvent()
 
-    @Parcelize
     data class OnRecipePaginate(var data: Resource<*>) : RecipeEvent()
 }
 
@@ -140,10 +139,8 @@ sealed class SideEffect {
     object OnSavedRecipe : SideEffect()
 }
 
-@Parcelize
-data class RecipeData(var allRecipes: List<RecipeModel>) : Parcelable
+data class RecipeData(var allRecipes: List<RecipeModel>)
 
-@Parcelize
 data class RecipeListState(
     var event: RecipeEvent = RecipeEvent.Uninitialized,
     val onSavedRecipes: Resource<Empty>? = Resource.Uninitialized,
