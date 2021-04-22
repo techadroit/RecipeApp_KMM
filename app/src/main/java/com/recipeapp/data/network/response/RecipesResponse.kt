@@ -1,5 +1,8 @@
 package com.recipeapp.data.network.response
 
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
+
 data class RandomRecipesResponse(
     val recipes: List<Recipe>
 )
@@ -134,6 +137,7 @@ data class VideoListResponses(
     val videos: List<Video>
 )
 
+@Parcelize
 data class Video(
     val length: Int,
     val rating: Double,
@@ -142,4 +146,4 @@ data class Video(
     val title: String,
     val views: Int,
     val youTubeId: String
-)
+) : Parcelable

@@ -24,6 +24,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.haroldadmin.vector.VectorFragment
+import com.recipeapp.view.MainActivity
 
 /**
  * Base Fragment class with helper methods for handling views and back button events.
@@ -39,7 +40,9 @@ abstract class BaseMVIFragment : VectorFragment() {
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        activity?.let { navigator = Navigator(it) }
+        navigator = activity?.let {
+            (it as MainActivity).navigator
+        }
     }
 
     override fun onCreateView(
@@ -53,6 +56,7 @@ abstract class BaseMVIFragment : VectorFragment() {
 
     internal fun firstTimeCreated(savedInstanceState: Bundle?) = savedInstanceState == null
 }
+
 abstract class BaseFragment : Fragment() {
 
     abstract fun layoutId(): Int
@@ -62,7 +66,9 @@ abstract class BaseFragment : Fragment() {
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        activity?.let { navigator = Navigator(it) }
+        navigator = activity?.let {
+            (it as MainActivity).navigator
+        }
     }
 
     override fun onCreateView(

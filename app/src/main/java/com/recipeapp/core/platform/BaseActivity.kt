@@ -18,6 +18,8 @@ package com.recipeapp.core.platform
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.navigation.fragment.NavHostFragment
+import com.recipeapp.R
 
 /**
  * Base Activity class with helper methods for handling fragment transactions and back button
@@ -27,8 +29,12 @@ import androidx.appcompat.app.AppCompatActivity
  */
 abstract class BaseActivity : AppCompatActivity() {
 
-    val navigator by lazy{
-        Navigator(this@BaseActivity)
+    var resId: ResId? = null
+    val navigator by lazy {
+        val navHostFragment =
+            supportFragmentManager.findFragmentById(R.id.container) as NavHostFragment
+        val navController = navHostFragment.navController
+        Navigator(navController, this@BaseActivity)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

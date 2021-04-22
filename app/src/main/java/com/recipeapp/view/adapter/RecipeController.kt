@@ -23,6 +23,7 @@ class RecipeController : BaseController() {
     var isPaginateError = false
     //Todo change it to a appropriate method
     var click: ((recipeModel: RecipeModel?) -> Unit)? = null
+    var rowClick : ((recipeModel: RecipeModel?) -> Unit) ?= null
     var context: Context? = null
 
     fun setState(state: RecipeListState) {
@@ -80,6 +81,7 @@ class RecipeController : BaseController() {
     private fun addRecipesItemModel() {
         list.forEachIndexed { index, it ->
             RecipeViewHolder_().id(it.id)
+                .recipeModel(it)
                 .listener(object : OnClick {
                     override fun onClick(event: OnClickEvent) {
                         when (event) {
@@ -88,6 +90,9 @@ class RecipeController : BaseController() {
                                 val position = adapter.getModelPosition(model)
                                 val recipeModel = list.get(position)
                                 click?.invoke(recipeModel)
+                            }
+                            is OnClickEvent.OnRowClick -> {
+                                rowClick?.invoke(event.recipeModel)
                             }
                         }
                     }

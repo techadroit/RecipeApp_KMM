@@ -73,5 +73,4 @@ abstract class BaseMVIViewmodel<T : RecipeState>(
 
 }
 
-@Parcelize
-open class RecipeState : VectorState,Parcelable
+open class RecipeState : VectorState

@@ -18,6 +18,7 @@ import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 
 
@@ -32,18 +33,29 @@ class RecipeListFragment : BaseMVIFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initEpoxy()
-        viewmodel.localRepository =
-            RecipeLocalRepository(RecipeDatabase.getDatabase(context!!).recipeDao())
-        viewmodel.loadRecipes()
+        context?.let {
+            with(viewmodel){
+                localRepository =
+                    RecipeLocalRepository(RecipeDatabase.getDatabase(it).recipeDao())
+                loadRecipes()
+            }
+        }
         observeChanges()
     }
 
     private fun initEpoxy() {
-        recipeController.context = context
-        rvList.setController(recipeController)
-        recipeController.click = {
-            it?.let {
-                viewmodel.saveRecipe(it)
+        with(recipeController){
+            this.context = context
+            rvList.setController(this)
+            click = {
+                it?.let {
+                    viewmodel.saveRecipe(it)
+                }
+            }
+            rowClick = {
+                it?.let {
+                    navigator?.showRecipeDetail(it.id.toString())
+                }
             }
         }
     }
@@ -63,6 +75,7 @@ class RecipeListFragment : BaseMVIFragment() {
     }
 
     private fun observeChanges() {
+
         renderState(viewmodel) { state ->
             checkToAddPagination(state.event)
             recipeController.setState(state)

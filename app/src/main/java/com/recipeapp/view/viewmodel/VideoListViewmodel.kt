@@ -1,5 +1,6 @@
 package com.recipeapp.view.viewmodel
 
+import android.os.Parcelable
 import androidx.lifecycle.SavedStateHandle
 import com.recipeapp.core.Consumable
 import com.recipeapp.core.Resource
@@ -13,9 +14,10 @@ import com.recipeapp.data.network.response.VideoListResponses
 import com.recipeapp.data.repositories.RecipeRepository
 import com.recipeapp.domain.usecases.SearchVideoRecipeUsecase
 import com.recipeapp.util.QUERY
+import kotlinx.android.parcel.Parcelize
 import kotlinx.coroutines.launch
 
-class VideoListViewmodel(var initalState: RecipeVideoState,savedStateHandle: SavedStateHandle) :
+class VideoListViewmodel(initalState: RecipeVideoState,savedStateHandle: SavedStateHandle) :
     BaseMVIViewmodel<RecipeVideoState>(initalState,savedStateHandle) {
     var page = 0
 
@@ -61,15 +63,22 @@ class VideoListViewmodel(var initalState: RecipeVideoState,savedStateHandle: Sav
     }
 }
 
-sealed class RecipeVideoEvent {
+
+sealed class RecipeVideoEvent : Parcelable {
+    @Parcelize
     object Uninitialized : RecipeVideoEvent()
+    @Parcelize
     data class OnLoad(var isPaginate: Boolean = false, var isLoading: Boolean) : RecipeVideoEvent()
+    @Parcelize
     data class OnRecipeInitialLoad(var data: List<Video>) : RecipeVideoEvent()
+    @Parcelize
     data class OnError(var isPaginate: Boolean = false, var failure: Failure) : RecipeVideoEvent()
+    @Parcelize
     data class onRecipePaginate(var data: Resource<*>) : RecipeVideoEvent()
 }
 
+@Parcelize
 data class RecipeVideoState(
     var event: RecipeVideoEvent = RecipeVideoEvent.Uninitialized,
     var sideEffect: Consumable<SideEffect>? = null
-) : RecipeState()
+) : RecipeState(),Parcelable

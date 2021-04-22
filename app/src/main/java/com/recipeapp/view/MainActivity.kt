@@ -3,9 +3,14 @@ package com.recipeapp.view
 import android.os.Bundle
 import android.view.MenuItem
 import androidx.core.view.forEach
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.NavHostFragment
 import com.recipeapp.R
 import com.recipeapp.core.platform.BaseActivity
+import com.recipeapp.core.platform.BaseFragment
+import com.recipeapp.core.platform.BaseMVIFragment
 import com.recipeapp.core.platform.ResId
 import com.recipeapp.data.datasource.RecipeDatabase
 import com.recipeapp.data.repositories.RecipeLocalRepository
@@ -16,7 +21,6 @@ import kotlinx.coroutines.launch
 
 class MainActivity : BaseActivity() {
 
-    val fragmentContainerId = ResId(R.id.container)
     val recipeLocalRepository by lazy {
         RecipeLocalRepository(RecipeDatabase.getDatabase(this@MainActivity).recipeDao())
     }
@@ -24,6 +28,7 @@ class MainActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        resId = ResId(R.id.container)
         initBottomNav()
         updateSavedRecipesBadge()
     }
@@ -54,24 +59,19 @@ class MainActivity : BaseActivity() {
                 R.id.action_recipes -> {
                     deselectAllTheBottomTabs()
                     enableMenu(it)
-                    navigator.showRecipeList(fragmentContainerId)
+                    navigator.showRecipeList()
                     return@setOnNavigationItemSelectedListener true
                 }
                 R.id.action_favorites -> {
                     deselectAllTheBottomTabs()
                     enableMenu(it)
-                    navigator.showSavedRecipes(fragmentContainerId)
+                    navigator.showSavedRecipes()
                     return@setOnNavigationItemSelectedListener true
                 }
                 R.id.action_videos -> {
                     deselectAllTheBottomTabs()
                     enableMenu(it)
-                    navigator.showRecipeVideo(fragmentContainerId)
-                    return@setOnNavigationItemSelectedListener true
-                }
-                R.id.action_settings -> {
-                    deselectAllTheBottomTabs()
-                    enableMenu(it)
+                    navigator.showRecipeVideo()
                     return@setOnNavigationItemSelectedListener true
                 }
                 else -> return@setOnNavigationItemSelectedListener false

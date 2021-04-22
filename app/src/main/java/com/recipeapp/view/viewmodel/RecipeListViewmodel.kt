@@ -146,4 +146,4 @@ data class RecipeListState(
     val onSavedRecipes: Resource<Empty>? = Resource.Uninitialized,
     var recipes: RecipeData = RecipeData(emptyList()),
     var sideEffect: Consumable<SideEffect> ?= null
-) : RecipeState()
+) : RecipeState(),Parcelable
