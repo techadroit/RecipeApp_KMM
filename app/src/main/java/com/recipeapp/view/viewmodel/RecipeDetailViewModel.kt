@@ -1,14 +1,13 @@
 package com.recipeapp.view.viewmodel
 
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
+import com.recipeapp.core.collectIn
 import com.recipeapp.core.exception.Failure
 import com.recipeapp.core.platform.BaseMVIViewmodel
 import com.recipeapp.core.platform.RecipeState
-import com.recipeapp.core.platform.ViewState
 import com.recipeapp.data.network.response.RecipeDetailResponse
 import com.recipeapp.domain.usecases.GetRecipeDetailUsecase
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.catch
 
 class RecipeDetailViewModel(
     initialState: RecipeDetailState = RecipeDetailState()
@@ -17,14 +16,16 @@ class RecipeDetailViewModel(
     lateinit var usecase: GetRecipeDetailUsecase
 
     fun getRecipeDetailForId(id: String) {
-        viewModelScope.launch {
-            setState {
-                copy(isLoading = true)
-            }
-            usecase(GetRecipeDetailUsecase.Param(id = id)) {
-                it.either(::handleFailureResponse, ::handleSuccessResponse)
-            }
+        setState {
+            copy(isLoading = true)
         }
+        usecase(GetRecipeDetailUsecase.Param(id = id))
+            .catch {
+                handleFailureResponse(this as Failure)
+            }
+            .collectIn(viewModelScope) {
+                handleSuccessResponse(it)
+            }
     }
 
     fun handleFailureResponse(failure: Failure) {
@@ -34,7 +35,6 @@ class RecipeDetailViewModel(
     }
 
     fun handleSuccessResponse(recipeDetailResponse: RecipeDetailResponse) {
-//        recipeDetailLiveData.value = ViewState.onSuccess(recipeDetailResponse)
         setState {
             copy(isLoading = false, recipeDetail = recipeDetailResponse)
         }

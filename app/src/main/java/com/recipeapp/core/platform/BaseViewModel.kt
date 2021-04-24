@@ -60,16 +60,8 @@ object Empty : Parcelable
 abstract class BaseMVIViewmodel<T : RecipeState>(
     initialState: T,
     savedStateHandle: SavedStateHandle
-) : SavedStateVectorViewModel<T>(initialState = initialState,savedStateHandle = savedStateHandle) {
-
-
-    var failure: MutableLiveData<Failure> = MutableLiveData()
+) : SavedStateVectorViewModel<T>(initialState = initialState, savedStateHandle = savedStateHandle) {
     val viewModelScope = CoroutineScope(Dispatchers.Default + Job())
-
-    protected fun handleFailure(failure: Failure) {
-        this.failure.value = failure
-    }
-
 
 }
 

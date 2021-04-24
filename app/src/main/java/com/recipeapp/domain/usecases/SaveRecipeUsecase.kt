@@ -17,3 +17,5 @@ class SaveRecipeUsecase(var localRepository: RecipeLocalRepository) :
     data class Param(var recipeModel: RecipeModel)
 }
 
+
+
