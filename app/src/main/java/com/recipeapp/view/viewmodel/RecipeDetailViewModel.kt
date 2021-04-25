@@ -1,6 +1,5 @@
 package com.recipeapp.view.viewmodel
 
-import androidx.lifecycle.SavedStateHandle
 import com.recipeapp.core.collectIn
 import com.recipeapp.core.exception.Failure
 import com.recipeapp.core.platform.BaseMVIViewmodel
@@ -11,8 +10,7 @@ import kotlinx.coroutines.flow.catch
 
 class RecipeDetailViewModel(
     initialState: RecipeDetailState = RecipeDetailState()
-    , savedStateHandle: SavedStateHandle
-) : BaseMVIViewmodel<RecipeDetailState>(initialState, savedStateHandle) {
+) : BaseMVIViewmodel<RecipeDetailState>(initialState) {
     lateinit var usecase: GetRecipeDetailUsecase
 
     fun getRecipeDetailForId(id: String) {

@@ -3,20 +3,14 @@ package com.recipeapp.view
 import android.os.Bundle
 import android.view.MenuItem
 import androidx.core.view.forEach
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.findNavController
-import androidx.navigation.fragment.NavHostFragment
 import com.recipeapp.R
 import com.recipeapp.core.platform.BaseActivity
-import com.recipeapp.core.platform.BaseFragment
-import com.recipeapp.core.platform.BaseMVIFragment
 import com.recipeapp.core.platform.ResId
 import com.recipeapp.data.datasource.RecipeDatabase
 import com.recipeapp.data.repositories.RecipeLocalRepository
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.launch
 
 
 class MainActivity : BaseActivity() {
@@ -34,8 +28,8 @@ class MainActivity : BaseActivity() {
     }
 
     fun updateSavedRecipesBadge() {
-        lifecycleScope.launch {
-            recipeLocalRepository.getSavedReicpesCount().collect {
+        lifecycleScope.launchWhenStarted {
+            recipeLocalRepository.getSavedRecipesCount().collect {
                 if (it > 0)
                     bottomNav.getOrCreateBadge(R.id.action_favorites).number = it.toInt()
             }

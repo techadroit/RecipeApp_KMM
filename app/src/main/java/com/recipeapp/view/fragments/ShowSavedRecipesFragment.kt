@@ -2,11 +2,10 @@ package com.recipeapp.view.fragments
 
 import android.os.Bundle
 import android.view.View
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import com.haroldadmin.vector.fragmentViewModel
 import com.recipeapp.R
-import com.recipeapp.core.platform.BaseFragment
-import com.recipeapp.core.platform.ViewState
+import com.recipeapp.core.Resource
+import com.recipeapp.core.platform.BaseMVIFragment
 import com.recipeapp.data.datasource.RecipeDatabase
 import com.recipeapp.data.repositories.RecipeLocalRepository
 import com.recipeapp.domain.usecases.LoadSavedRecipeUsecase
@@ -15,14 +14,12 @@ import com.recipeapp.view.pojo.RecipeModel
 import com.recipeapp.view.viewmodel.FragmentShowSavedRecipesViewmodel
 import kotlinx.android.synthetic.main.fragment_recipe_list_layout.*
 
-class ShowSavedRecipesFragment : BaseFragment() {
+class ShowSavedRecipesFragment : BaseMVIFragment() {
     override fun layoutId(): Int {
         return R.layout.fragment_saved_recipes
     }
 
-    val viewmodel by lazy {
-        ViewModelProviders.of(this).get(FragmentShowSavedRecipesViewmodel::class.java)
-    }
+    val viewmodel: FragmentShowSavedRecipesViewmodel by fragmentViewModel()
     val recipeController = RecipeController()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -34,9 +31,11 @@ class ShowSavedRecipesFragment : BaseFragment() {
 
     fun initViewModel() {
         val localRepository =
-            RecipeLocalRepository(RecipeDatabase.getDatabase(context!!).recipeDao())
-        viewmodel.usecase = LoadSavedRecipeUsecase((localRepository))
-        viewmodel.loadSavedRecipes()
+            RecipeLocalRepository(RecipeDatabase.getDatabase(requireContext()).recipeDao())
+        with(viewmodel) {
+            usecase = LoadSavedRecipeUsecase((localRepository))
+            loadSavedRecipes()
+        }
     }
 
     fun initEpoxy() {
@@ -48,19 +47,16 @@ class ShowSavedRecipesFragment : BaseFragment() {
     }
 
     fun observeChanges() {
-        viewmodel.liveData.observe(this, Observer {
-            when (it) {
-                is ViewState.onSuccess -> {
-                    addRecipes(it.data as List<RecipeModel>)
+        renderState(viewmodel) { state ->
+            when (state.event) {
+                is Resource.Loading -> showLoading()
+                is Resource.Success -> {
+                    hideLoading()
+                    addRecipes(state.event.data as List<RecipeModel>)
                 }
-                is ViewState.onLoading -> {
-                    if (it.loading) showLoading() else hideLoading()
-                }
-                else -> {
-                }
+                else ->  hideLoading()
             }
         }
-        )
     }
 
     fun showLoading() {

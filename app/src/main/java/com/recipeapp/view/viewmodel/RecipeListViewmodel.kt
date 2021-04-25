@@ -1,6 +1,5 @@
 package com.recipeapp.view.viewmodel
 
-import android.os.Parcelable
 import androidx.lifecycle.SavedStateHandle
 import com.recipeapp.core.Consumable
 import com.recipeapp.core.Resource
@@ -17,12 +16,10 @@ import com.recipeapp.domain.usecases.SaveRecipeUsecase
 import com.recipeapp.domain.usecases.SearchRecipeUsecase
 import com.recipeapp.util.QUERY
 import com.recipeapp.view.pojo.RecipeModel
-import kotlinx.android.parcel.Parcelize
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.launch
 
 class RecipeListViewmodel(initialState: RecipeListState, savedStateHandle: SavedStateHandle) :
-    BaseMVIViewmodel<RecipeListState>(initialState, savedStateHandle) {
+    BaseMVIViewmodel<RecipeListState>(initialState) {
 
     lateinit var localRepository: RecipeLocalRepository
     var page = 1
@@ -31,14 +28,15 @@ class RecipeListViewmodel(initialState: RecipeListState, savedStateHandle: Saved
     val searchUsecase by lazy { SearchRecipeUsecase(repos) }
     val usecase by lazy { SaveRecipeUsecase(localRepository) }
 
-    fun saveRecipe(recipeModel: RecipeModel) {
-        viewModelScope.launch {
-            usecase(SaveRecipeUsecase.Param(recipeModel), { onRecipeSaved() })
-        }
-    }
+    fun saveRecipe(recipeModel: RecipeModel) =
+        usecase(SaveRecipeUsecase.Param(recipeModel))
+            .collectIn(viewModelScope) {
+                onRecipeSaved()
+            }
+
 
     private fun onRecipeSaved() {
-        setStateAndPersist {
+        setState {
             copy(
                 onSavedRecipes = Resource.Success(data = Empty),
                 sideEffect = Consumable(SideEffect.OnSavedRecipe)
@@ -49,7 +47,7 @@ class RecipeListViewmodel(initialState: RecipeListState, savedStateHandle: Saved
     fun loadRecipes() =
         withState {
             if (it.event !is RecipeEvent.OnLoad) {
-                setStateAndPersist { copy(event = RecipeEvent.OnLoad(isLoading = true)) }
+                setState { copy(event = RecipeEvent.OnLoad(isLoading = true)) }
                 searchRecipe(query = QUERY)
             }
         }
@@ -64,7 +62,7 @@ class RecipeListViewmodel(initialState: RecipeListState, savedStateHandle: Saved
         }
 
     private fun searchRecipe(query: String, isPaginate: Boolean = false) {
-        searchUsecase(SearchRecipeUsecase.Param(query = query,offset = page))
+        searchUsecase(SearchRecipeUsecase.Param(query = query, offset = page))
             .catch { e ->
                 handleFailure(e as Failure, isPaginate = isPaginate)
             }.collectIn(viewModelScope) {
@@ -92,20 +90,11 @@ class RecipeListViewmodel(initialState: RecipeListState, savedStateHandle: Saved
 }
 
 
-sealed class RecipeEvent : Parcelable {
-    @Parcelize
+sealed class RecipeEvent {
     object Uninitialized : RecipeEvent()
-
-    @Parcelize
     data class OnLoad(var isPaginate: Boolean = false, var isLoading: Boolean) : RecipeEvent()
-
-    @Parcelize
     data class OnRecipeInitialLoad(var data: Resource<*>) : RecipeEvent()
-
-    @Parcelize
     data class OnError(var isPaginate: Boolean = false, var failure: Failure) : RecipeEvent()
-
-    @Parcelize
     data class OnRecipePaginate(var data: Resource<*>) : RecipeEvent()
 }
 
@@ -113,13 +102,11 @@ sealed class SideEffect {
     object OnSavedRecipe : SideEffect()
 }
 
-@Parcelize
-data class RecipeData(var allRecipes: List<RecipeModel>) : Parcelable
+data class RecipeData(var allRecipes: List<RecipeModel>)
 
-@Parcelize
 data class RecipeListState(
     var event: RecipeEvent = RecipeEvent.Uninitialized,
     val onSavedRecipes: Resource<Empty>? = Resource.Uninitialized,
     var recipes: RecipeData = RecipeData(emptyList()),
     var sideEffect: Consumable<SideEffect>? = null
-) : RecipeState(), Parcelable
+) : RecipeState()
