@@ -2,23 +2,23 @@ package com.recipeapp.core.platform
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.fragment.app.FragmentActivity
 import androidx.navigation.NavController
+import androidx.navigation.NavDirections
 import com.google.android.youtube.player.YouTubePlayer
 import com.recipeapp.R
-import com.recipeapp.view.fragments.RecipeDetailFragment
-import com.recipeapp.view.fragments.RecipeListFragment
-import com.recipeapp.view.fragments.RecipeVideosFragment
-import com.recipeapp.view.fragments.ShowSavedRecipesFragment
+import com.recipeapp.view.fragments.RecipeListFragmentDirections
 import com.thefinestartist.ytpa.YouTubePlayerActivity
 
 
-class Navigator(var navController: NavController,var activity: BaseActivity) {
+class Navigator(var navController: NavController, var activity: BaseActivity) {
 
     fun showRecipeDetail(id: String) {
-        addFragment(RecipeDetailFragment(), Bundle().apply {
-            putString("id", id)
-        }, true)
+        addFragment(
+            ResId(
+                R.id.recipeDetailFragment
+            ),
+            RecipeListFragmentDirections.navRecipeDetail(id)
+        )
     }
 
     fun showRecipeList() {
@@ -33,10 +33,12 @@ class Navigator(var navController: NavController,var activity: BaseActivity) {
         addFragment(ResId(R.id.showSavedRecipesFragment))
     }
 
-    fun addFragment(resId: ResId) {
-//        activity.supportFragmentManager.beginTransaction().add(resId.resId, fragment, fragment.tag)
-//            .commitAllowingStateLoss()
-        navController.navigate(resId.resId)
+    fun addFragment(resId: ResId, action: NavDirections? = null) {
+        if (action != null) {
+            navController.navigate(action)
+        } else {
+            navController.navigate(resId.resId)
+        }
     }
 
     fun addFragment(

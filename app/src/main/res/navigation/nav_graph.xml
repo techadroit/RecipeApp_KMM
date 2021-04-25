@@ -7,7 +7,18 @@
     <fragment
         android:id="@+id/recipeListFragment"
         android:name="com.recipeapp.view.fragments.RecipeListFragment"
-        android:label="RecipeListFragment" />
+        android:label="RecipeListFragment" >
+        <action
+            android:id="@+id/nav_recipe_detail"
+            app:destination="@id/recipeDetailFragment"
+            app:enterAnim="@animator/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim" >
+            <argument
+                android:name="id"
+                app:argType="string"
+                app:nullable="false" />
+        </action>
+    </fragment>
     <fragment
         android:id="@+id/showSavedRecipesFragment"
         android:name="com.recipeapp.view.fragments.ShowSavedRecipesFragment"
@@ -19,5 +30,6 @@
     <fragment
         android:id="@+id/recipeDetailFragment"
         android:name="com.recipeapp.view.fragments.RecipeDetailFragment"
-        android:label="RecipeDetailFragment" />
+        android:label="RecipeDetailFragment" >
+        </fragment>
 </navigation>

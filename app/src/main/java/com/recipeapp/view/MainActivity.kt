@@ -3,9 +3,15 @@ package com.recipeapp.view
 import android.os.Bundle
 import android.view.MenuItem
 import androidx.core.view.forEach
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.findNavController
 import com.recipeapp.R
+import com.recipeapp.core.extension.observe
 import com.recipeapp.core.platform.BaseActivity
+import com.recipeapp.core.platform.BaseFragment
 import com.recipeapp.core.platform.ResId
 import com.recipeapp.data.datasource.RecipeDatabase
 import com.recipeapp.data.repositories.RecipeLocalRepository
